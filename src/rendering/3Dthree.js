@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 let lastTime = performance.now();
 let frames = 0;
@@ -20,7 +20,7 @@ let backWall;
 const sensitivity = 1.2;
 
 let cow1;
-let cow2;
+let gun;
 
 const base = import.meta.env.BASE_URL;
 
@@ -257,7 +257,7 @@ function createRoom() {
        
 
         cow1 = gltf.scene;
-        cow2 = gltf.scene.clone();
+        const cow2 = gltf.scene.clone();
 
         cow1.position.set(
             0,
@@ -308,6 +308,23 @@ function createRoom() {
         }, undefined, function ( error ) {
         console.error( error );
     } );
+
+    const gunLoader = new GLTFLoader();
+
+    gunLoader.load(`${base}assets/Models/free_fire_gun_desert_eagle.glb`, function ( gltf ) {
+        gun = gltf.scene;
+
+        gun.position.set(
+            0,
+            0,
+            -2
+        );
+
+        scene.add(gun);
+
+    }, undefined, function ( error ) {
+        console.error( error );
+    });
 
 }
 
@@ -360,7 +377,10 @@ export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height, 
             cowPos.y,
             cowPos.z
         );
+    }
 
+    if(gun){
+        
         const euler = new THREE.Euler(
             THREE.MathUtils.degToRad(phoneRotation.beta),
             THREE.MathUtils.degToRad(phoneRotation.alpha),
@@ -368,7 +388,7 @@ export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height, 
             "YXZ"
         );
 
-        cow1.quaternion.setFromEuler(euler);
+        gun.quaternion.setFromEuler(euler);
     }
     
     updateOffAxisProjection(
