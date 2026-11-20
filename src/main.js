@@ -8,7 +8,7 @@ import {
     resizeRenderer,
 } from "./rendering/3Dthree.js";
 
-async function startApp() {
+async function startDesktop() {
 
     const canvas =
         document.getElementById("fullscreen");
@@ -100,4 +100,37 @@ async function startApp() {
     renderLoop();
 }
 
-startApp();
+async function startController () {
+
+    const permissionButton = document.getElementById("permissionBtn");
+
+    permissionButton.addEventListener("click", async () => {
+        if (
+            typeof DeviceOrientationEvent !== "undefined" &&
+            typeof DeviceOrientationEvent.requestPermission === "function"
+        ) {
+            const permission = await DeviceOrientationEvent.requestPermission();
+
+            alert(permission);
+    
+            if (permission === "granted"){
+                window.addEventListener("deviceorientation", handleOrientation);
+            }
+        }
+    })
+
+
+
+}
+
+function handleOrientation (event) {
+
+    const output = document.getElementById("output");
+    output.innerText =  `${event.alpha}, ${event.beta}, ${event.gamma}`
+}
+
+if(window.location.pathname === "/3DScreen/controller"){
+    startController();
+} else {
+    startDesktop();
+}
