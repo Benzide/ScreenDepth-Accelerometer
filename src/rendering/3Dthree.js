@@ -361,21 +361,14 @@ export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height, 
             cowPos.z
         );
 
-        cow1.rotation.y = 
-            THREE.MathUtils.degToRad(
-                phoneRotation.alpha
-            );
+        const euler = new THREE.Euler(
+            THREE.MathUtils.degToRad(phoneRotation.beta),
+            THREE.MathUtils.degToRad(phoneRotation.alpha),
+            THREE.MathUtils.degToRad(phoneRotation.gamma),
+            "YXZ"
+        );
 
-        cow1.rotation.x =
-            THREE.MathUtils.degToRad(
-                phoneRotation.beta
-            );
-
-        cow1.rotation.z =
-            THREE.MathUtils.degToRad(
-                phoneRotation.gamma
-            );
-
+        cow1.quaternion.setFromEuler(euler);
     }
     
     updateOffAxisProjection(
