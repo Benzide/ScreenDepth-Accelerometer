@@ -311,7 +311,7 @@ function createRoom() {
 
     const gunLoader = new GLTFLoader();
 
-    gunLoader.load(`${base}assets/Models/free_fire_gun_desert_eagle-fixed.glb`, function ( gltf ) {
+    gunLoader.load(`${base}assets/Models/free_fire_gun_desert_eagle.glb`, function ( gltf ) {
         gun = gltf.scene;
 
         gun.scale.set(
@@ -322,7 +322,7 @@ function createRoom() {
 
         gun.position.set(
             0,
-            -2,
+            -1,
             -0.5
         );
 
