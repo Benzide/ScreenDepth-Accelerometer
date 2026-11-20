@@ -311,14 +311,22 @@ function createRoom() {
 
     const gunLoader = new GLTFLoader();
 
-    gunLoader.load(`${base}assets/Models/free_fire_gun_desert_eagle.glb`, function ( gltf ) {
+    gunLoader.load(`${base}assets/Models/free_fire_gun_desert_eagle-fixed.glb`, function ( gltf ) {
         gun = gltf.scene;
+
+        gun.scale.set(
+            3.5,
+            3.5,
+            3.5,
+        )
 
         gun.position.set(
             0,
-            0,
-            -2
+            -2,
+            -0.5
         );
+
+        gun.rotation.x = Math.PI;
 
         scene.add(gun);
 
@@ -379,7 +387,7 @@ export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height, 
         );
     }
 
-    if(gun){
+    if(gun && phoneRotation){
         
         const euler = new THREE.Euler(
             THREE.MathUtils.degToRad(phoneRotation.beta),
