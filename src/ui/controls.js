@@ -5,14 +5,23 @@ import { Peer } from "peerjs";
 export function initializeControls() {
     const optionsContainer = document.getElementById("optionsContainer");
     const slider = document.getElementById("myRange");
-    const audio = document.createElement("AUDIO");
 
-    
+    const state = {
+        sliderValue: Number(slider.value),
+        cow1Pos: {x: 0, y: -3, z: -6},
+        phoneRotation: {
+            alpha: 0,
+            beta: 0,
+            gamma: 0
+        }
+    };
+
     const qrCanvas = document.createElement("canvas");
-    
+
+
     optionsContainer.appendChild(qrCanvas);
     qrCanvas.style.alignSelf = 'center';
-    
+
     const peer = new Peer();
 
     peer.on("open", (id) => {
@@ -39,42 +48,19 @@ export function initializeControls() {
 
         conn.on("data", (data) => {
 
-            console.log(
-                data.alpha,
-                data.beta,
-                data.gamma
-            );
+            state.phoneRotation.alpha = data.alpha;
+            state.phoneRotation.beta = data.beta;
+            state.phoneRotation.gamma = data.gamma;
+
 
         });
 
     });
 
-    const connectBtn = document.getElementById("connectBtn");
-
-    const SERVICE_UUID =
-        "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
-
-    const RX_UUID =
-        "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
-
-    const TX_UUID =
-        "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
-
-    const base = import.meta.env.BASE_URL;
-
-
-    audio.src = `${base}assets/Sounds/mixkit-cow-barn-ambience-1754.wav`;
-
-    const state = {
-        sliderValue: Number(slider.value),
-        cow1Pos: {x: 0, y: -3, z: -6},
-    };
 
     slider.addEventListener("input", () => {
         state.sliderValue = Number(slider.value);
     });
-
-    connectBtn.addEventListener("click", connect);
 
     window.addEventListener("keydown", (event) => {
         switch(event.code){
@@ -98,68 +84,9 @@ export function initializeControls() {
                     state.cow1Pos.z += 0.5;
                 }
                 break;
-            case "Space":
-                if(audio.paused == false){
-                    audio.pause();
-                    audio.load();
-                } else {
-                    audio.play();
-                }
         }
     });
 
-    async function connect() {
-
-        const device =
-            await navigator.bluetooth.requestDevice({
-                filters: [{
-                    services: [SERVICE_UUID]
-                }]
-            });
-
-        const server =
-            await device.gatt.connect();
-
-        const service =
-            await server.getPrimaryService(
-                SERVICE_UUID
-            );
-
-        const rx =
-            await service.getCharacteristic(
-                RX_UUID
-            );
-
-        const tx =
-            await service.getCharacteristic(
-                TX_UUID
-            );
-
-        await tx.startNotifications();
-
-        tx.addEventListener(
-            "characteristicvaluechanged",
-            event => {
-
-                const data =
-                    new TextDecoder().decode(
-                        event.target.value
-                    );
-
-                const [ax, ay, az] = data.split(",").map(Number);
-                
-                document
-                    .getElementById("output")
-                    .textContent = ax + " , " + ay + " , " +  az;
-            }
-        );
-
-        await rx.writeValue(
-            new TextEncoder().encode("START")
-        );
-
-        console.log("Started!");
-    }
     
     return state;
 }

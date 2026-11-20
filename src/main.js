@@ -88,7 +88,8 @@ async function startDesktop() {
                 currentX,
                 currentY,
                 canvas.width,
-                canvas.height
+                canvas.height,
+                controls.phoneRotation
             );
         }
 
@@ -117,6 +118,8 @@ async function startController () {
 
                 const conn =
                     peer.connect(laptopId);
+
+                alert("Connected to PC, now sending orientation!")
 
                 conn.on("open", () => {
                     window.addEventListener(

@@ -344,7 +344,7 @@ export function resizeRenderer(width, height) {
     camera.updateProjectionMatrix();
 }
 
-export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height) {
+export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height, phoneRotation) {
     
     const eyeX =
     -(faceX / width - 0.5)
@@ -360,6 +360,22 @@ export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height) 
             cowPos.y,
             cowPos.z
         );
+
+        cow1.rotation.y = 
+            THREE.MathUtils.degToRad(
+                phoneRotation.alpha
+            );
+
+        cow1.rotation.x =
+            THREE.MathUtils.degToRad(
+                phoneRotation.beta
+            );
+
+        cow1.rotation.z =
+            THREE.MathUtils.degToRad(
+                phoneRotation.gamma
+            );
+
     }
     
     updateOffAxisProjection(
