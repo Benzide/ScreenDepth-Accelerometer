@@ -129,7 +129,7 @@ function handleOrientation (event) {
     output.innerText =  `${event.alpha}, ${event.beta}, ${event.gamma}`
 }
 
-if(window.location.pathname === "/3DScreen/controller"){
+if(window.location.pathname === "/ScreenDepth-Accelerometer/controller"){
     startController();
 } else {
     startDesktop();
