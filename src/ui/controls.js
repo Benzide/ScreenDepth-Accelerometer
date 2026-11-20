@@ -6,7 +6,8 @@ export function initializeControls() {
     const slider = document.getElementById("myRange");
     const audio = document.createElement("AUDIO");
 
-    const url = `http://192.168.0.180:5173/3DScreen/controller`;
+    const url =
+    `${window.location.origin}/ScreenDepth-Accelerometer/?controller=true`;    
     
     const qrCanvas = document.createElement("canvas");
 

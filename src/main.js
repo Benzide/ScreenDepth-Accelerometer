@@ -129,7 +129,14 @@ function handleOrientation (event) {
     output.innerText =  `${event.alpha}, ${event.beta}, ${event.gamma}`
 }
 
-if(window.location.pathname === "/ScreenDepth-Accelerometer/controller"){
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+if (
+    params.get("controller") === "true"
+) {
     startController();
 } else {
     startDesktop();
