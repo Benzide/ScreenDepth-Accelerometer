@@ -8,6 +8,8 @@ import {
     resizeRenderer,
 } from "./rendering/3Dthree.js";
 
+import { Peer } from "peerjs";
+
 async function startDesktop() {
 
     const canvas =
@@ -105,17 +107,33 @@ async function startController () {
     const permissionButton = document.getElementById("permissionBtn");
 
     permissionButton.addEventListener("click", async () => {
-        if (
-            typeof DeviceOrientationEvent !== "undefined" &&
-            typeof DeviceOrientationEvent.requestPermission === "function"
-        ) {
-            const permission = await DeviceOrientationEvent.requestPermission();
+       
+        const permission = await DeviceOrientationEvent.requestPermission();
 
-            alert(permission);
-    
-            if (permission === "granted"){
-                window.addEventListener("deviceorientation", handleOrientation);
-            }
+        if (permission === "granted"){
+            const peer = new Peer();
+
+            peer.on("open", () => {
+
+                const conn =
+                    peer.connect(laptopId);
+
+                conn.on("open", () => {
+                    window.addEventListener(
+                        "deviceorientation",
+                        (event) => {
+
+                            conn.send({
+                                alpha: event.alpha,
+                                beta: event.beta,
+                                gamma: event.gamma
+                            });
+
+                        }
+                    );
+                });
+
+            });
         }
     })
 
@@ -123,16 +141,14 @@ async function startController () {
 
 }
 
-function handleOrientation (event) {
-
-    const output = document.getElementById("output");
-    output.innerText =  `${event.alpha}, ${event.beta}, ${event.gamma}`
-}
-
 const params =
     new URLSearchParams(
         window.location.search
     );
+
+const laptopId =
+    params.get("id");
+
 
 if (
     params.get("controller") === "true"

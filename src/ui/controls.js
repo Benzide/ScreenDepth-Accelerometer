@@ -1,4 +1,5 @@
 import QRCode from "qrcode";
+import { Peer } from "peerjs";
 
 
 export function initializeControls() {
@@ -6,18 +7,47 @@ export function initializeControls() {
     const slider = document.getElementById("myRange");
     const audio = document.createElement("AUDIO");
 
-    const url =
-    `${window.location.origin}/ScreenDepth-Accelerometer/?controller=true`;    
     
     const qrCanvas = document.createElement("canvas");
-
+    
     optionsContainer.appendChild(qrCanvas);
     qrCanvas.style.alignSelf = 'center';
+    
+    const peer = new Peer();
 
-    QRCode.toCanvas(
-        qrCanvas,
-        url
-    );
+    peer.on("open", (id) => {
+
+        console.log("Laptop ID:", id);
+
+        const url =
+            `${window.location.origin}/ScreenDepth-Accelerometer/?controller=true&id=${id}`;
+
+        QRCode.toCanvas(
+            qrCanvas,
+            url
+        );
+
+    });
+
+    peer.on("connection", (conn) => {
+
+        console.log("Phone connected");
+
+        conn.on("open", () => {
+            console.log("Connection opened");
+        });
+
+        conn.on("data", (data) => {
+
+            console.log(
+                data.alpha,
+                data.beta,
+                data.gamma
+            );
+
+        });
+
+    });
 
     const connectBtn = document.getElementById("connectBtn");
 
