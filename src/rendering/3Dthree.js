@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { GLTFLoader, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 let lastTime = performance.now();
 let frames = 0;
