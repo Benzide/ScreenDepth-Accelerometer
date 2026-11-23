@@ -83,7 +83,7 @@ async function startDesktop() {
                 (targetY - currentY) * smoothing;
 
             updateCameraAndScene(
-                controls.cow1Pos,
+                controls.gunPos,
                 23 - controls.sliderValue,
                 currentX,
                 currentY,

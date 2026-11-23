@@ -8,7 +8,7 @@ export function initializeControls() {
 
     const state = {
         sliderValue: Number(slider.value),
-        cow1Pos: {x: 0, y: -3, z: -6},
+        gunPos: {x: 0, y: -3, z: -6},
         phoneRotation: {
             alpha: 0,
             beta: 0,
@@ -65,23 +65,23 @@ export function initializeControls() {
     window.addEventListener("keydown", (event) => {
         switch(event.code){
             case "ArrowLeft":
-                if(state.cow1Pos.x > -4.5){
-                    state.cow1Pos.x -= 0.5;
+                if(state.gunPos.x > -4.5){
+                    state.gunPos.x -= 0.5;
                 }
                 break;
             case "ArrowUp":
-                if(state.cow1Pos.z > -11.5){
-                    state.cow1Pos.z -= 0.5;
+                if(state.gunPos.z > -11.5){
+                    state.gunPos.z -= 0.5;
                 }
                 break;
             case "ArrowRight":
-                if(state.cow1Pos.x < 4.5){
-                    state.cow1Pos.x += 0.5;
+                if(state.gunPos.x < 4.5){
+                    state.gunPos.x += 0.5;
                 }
                 break;
             case "ArrowDown":
-                if(state.cow1Pos.z < 0){
-                    state.cow1Pos.z += 0.5;
+                if(state.gunPos.z < 0){
+                    state.gunPos.z += 0.5;
                 }
                 break;
         }

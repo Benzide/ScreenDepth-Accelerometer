@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "three/webgpu";
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 let lastTime = performance.now();
@@ -19,14 +19,13 @@ let backWall;
 
 const sensitivity = 1.2;
 
-let cow1;
 let gun;
 
 const base = import.meta.env.BASE_URL;
 
 
 
-export function initThreeScene(canvas) {
+export async function initThreeScene(canvas) {
     scene = new THREE.Scene();
 
     const ambientLight = new THREE.AmbientLight(
@@ -59,7 +58,7 @@ export function initThreeScene(canvas) {
 
     camera.position.z = 3;
 
-    renderer = new THREE.WebGLRenderer({
+    renderer = new THREE.WebGPURenderer({
         canvas,
         antialias: true,
     });
@@ -251,64 +250,6 @@ function createRoom() {
     } );
 
 
-    const objectLoader = new GLTFLoader();
-
-    objectLoader.load( `${base}assets/Models/low-poly-cow.glb`, function ( gltf ) {
-       
-
-        cow1 = gltf.scene;
-        const cow2 = gltf.scene.clone();
-
-        cow1.position.set(
-            0,
-            -3,
-            -6
-        );
-
-        cow1.rotation.y = -Math.PI / 4;
-
-        cow1.scale.set(
-            1.5,
-            1.5,
-            1.5
-        );
-
-        cow2.position.set(
-            -2,
-            -3,
-            -5
-        );
-
-        cow2.rotation.y = Math.PI / 4;
-
-        cow2.scale.set(
-            0.75,
-            0.75,
-            0.75
-        );
-        
-
-        cow1.traverse((child) => {
-            if (child.isMesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-            }
-        });
-
-        cow2.traverse((child) => {
-            if (child.isMesh) {
-                child.castShadow = true;
-                child.receiveShadow = true;
-            }
-        });
-
-        scene.add(cow1);
-        scene.add(cow2);
-        
-        }, undefined, function ( error ) {
-        console.error( error );
-    } );
-
     const gunLoader = new GLTFLoader();
 
     gunLoader.load(`${base}assets/Models/free_fire_gun_desert_eagle.glb`, function ( gltf ) {
@@ -337,7 +278,7 @@ function createRoom() {
 }
 
 
-export function renderScene() {
+export async function renderScene() {
 
     frames++;
 
@@ -358,6 +299,8 @@ export function renderScene() {
         lastTime = now;
     }
 
+    await renderer.init();
+
 
     renderer.render(scene, camera);
 }
@@ -369,7 +312,7 @@ export function resizeRenderer(width, height) {
     camera.updateProjectionMatrix();
 }
 
-export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height, phoneRotation) {
+export function updateCameraAndScene(gunPos, eyeZ, faceX, faceY, width, height, phoneRotation) {
     
     const eyeX =
     -(faceX / width - 0.5)
@@ -378,14 +321,6 @@ export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height, 
     const eyeY =
     -(faceY / height - 0.5)
     * roomHeight * sensitivity;
-
-    if (cow1) {
-        cow1.position.set(
-            cowPos.x,
-            cowPos.y,
-            cowPos.z
-        );
-    }
 
     if(gun && phoneRotation){
         
@@ -397,6 +332,12 @@ export function updateCameraAndScene(cowPos, eyeZ, faceX, faceY, width, height, 
         );
 
         gun.quaternion.setFromEuler(euler);
+
+        gun.position.set(
+            gunPos.x,
+            gunPos.y,
+            gunPos.z
+        );
     }
     
     updateOffAxisProjection(
